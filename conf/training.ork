@@ -1,0 +1,10 @@
+# info about the db
+pipeline1:
+  type: ColorHistTrainer
+  module: object_recognition_colorhist
+  parameters:
+    object_ids: "all"
+    db:
+      type: 'CouchDB'
+      root: 'http://localhost:5984'
+      collection: 'object_recognition'

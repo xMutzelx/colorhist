@@ -1,0 +1,34 @@
+cv::Mat_<cv::Vec3f> old;
+
+/* old.cols*3 weil 3x mehr Spalten gebraucht werden für den Vec3f */
+cv::Mat_<cv::Vec3f> new = cv::Mat(old.rows, (old.cols)*3, CV_32F);
+
+/* Das erste Element vom Vektor wird mit 0.0f belegt */
+new.at<cv::Vec3f>(j,i)=0.0f;
+
+/* Es wird nur das erste Element ausgegeben, ohne [0] wird der gesamte Vektor ausgegeben */
+std::cout<<new.at<cv::Vec3f>(j,i)[0];
+
+-------------------------------------------------------------------------------------------------------------
+
+ecto::spore<std::vector<cv::Mat> > colorValues_;
+std::vector<cv::Mat>  colorValues;
+colorValues = *colorValues_
+
+float colorhist_array[26][3];
+cv::MatND M;
+
+/* Array wird aus cv::vector<cv::Mat> befüllt 
+ *             Vektor an Position i         Matrix an Position (0|j) 
+ *                            |                   |*/	
+colorhist_array[i][j] = colorValues[i].at<float>(0,j);
+
+
+/* Array wird aus einem vector befüllt, der 2D Matizen enthält 
+ *             Vektor an Position i		Matrix an Position (j|k)
+ *                           |                    | */
+colorhist_array[j][k] = colorValues[i].at<float>(j,k);
+	
+/* cv::Mat wird mit Array befüllt */
+M= cv::MatND(26,3, CV_32F, colorhist_array);
+
