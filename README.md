@@ -1,6 +1,89 @@
-<b>Colorhist</b> </br>
+# Colorhist </br>
 This repository contains a new post processing pipeline for ORK (Object Recognition Kitchen).
 Colorhist provides a support for color detection and comparision of color histograms. </br>
+</br>
+If you want to use this pipeline, you have to take care of some things.</br>
+<b>Installation tutorial:</b>
+
+<b>create catkin_ws</b> </br>
+RUN source /opt/ros/$ROS_DISTRO/setup.bash && \ </br>
+    mkdir -p /root/catkin_ws/src && \ </br>
+    cd /root/catkin_ws/src && \ </br>
+    catkin_init_workspace && \ </br>
+    cd /root/catkin_ws && \ </br>
+    catkin_make && \ </br>
+    echo 'source /root/catkin_ws/devel/setup.bash' > /root/.bashrc</br></br>
+
+<b>install ork dependencies</b> </br>
+RUN apt-get -y install libopenni-dev \ </br>
+    ros-$ROS_DISTRO-ecto* \ </br> 
+    ros-$ROS_DISTRO-opencv-candidate \ </br>
+    ros-$ROS_DISTRO-moveit-msgs \ </br>
+    ros-$ROS_DISTRO-openni* && \ </br>
+    source /root/catkin_ws/devel/setup.bash </br></br>
+
+<b>clone ork gitlab repos</b> </br>
+RUN cd /root/catkin_ws/src && \ </br>
+    git clone http://github.com/wg-perception/object_recognition_core && \ </br>
+    git clone http://github.com/wg-perception/capture && \ </br>
+    git clone http://github.com/wg-perception/reconstruction && \ </br>
+    git clone https://github.com/xMutzelx/ork_renderer.git && \ </br>
+    git clone http://github.com/wg-perception/tabletop && \ </br>
+    git clone https://github.com/xMutzelx/tod.git && \ </br>
+    git clone http://github.com/wg-perception/transparent_objects && \ </br>
+    git clone http://github.com/wg-perception/object_recognition_msgs && \ </br>
+    git clone http://github.com/wg-perception/object_recognition_ros && \ </br>
+    git clone http://github.com/wg-perception/object_recognition_ros_visualization && \ </br>
+    git clone https://github.com/xMutzelx/ork_tutorials.git </br>
+
+<b>change package versions</b> </br>
+RUN cd /root/catkin_ws/src/capture && \ </br>
+    git checkout 0.3.1 && \ </br>
+    cd /root/catkin_ws/src/object_recognition_core && \ </br>
+    git checkout fb3b3df && \ </br>
+    cd /root/catkin_ws/src/object_recognition_ros_visualization && \ </br>
+    git checkout f072ccf && \ </br>
+    cd /root/catkin_ws/src/ork_renderer && \ </br>
+    git checkout glut_fix && \ </br>
+    cd /root/catkin_ws/src/reconstruction && \ </br>
+    git checkout 8adb948 && \ </br>
+    cd /root/catkin_ws/src/tabletop && \ </br>
+    git checkout 7d49e3e && \ </br> 
+    cd /root/catkin_ws/src/tod && \ </br>
+    git checkout kinectv2_refactoring && \ </br>
+    cd /root/catkin_ws/src/transparent_objects && \ </br>
+    git checkout 75d7663 </br></br>
+
+<b>install ros dependencies</b> </br>
+RUN cd /root/catkin_ws && \ </br>
+    apt-get update && apt-get install -y libvlccore-dev python-apt && \ </br>
+    rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y </br></br>
+
+<b>build all this shit</b> </br>
+RUN cd /root/catkin_ws && \ </br>
+    source devel/setup.bash && \ </br>
+    catkin_make -j4 </br></br>
+
+<b>build linemod</b> </br> 
+RUN cd /root/catkin_ws/src && \ </br>
+    git clone https://github.com/xMutzelx/linemod.git && \ </br>
+    cd /root/catkin_ws/src/linemod && \ </br> 
+    git checkout colorhist_ready && \ </br>
+    cd /root/catkin_ws && \ </br>
+    rosdep install --from-paths src -r -y -i && \ </br>
+    source devel/setup.bash && \ </br>
+    catkin_make -j4 </br></br>
+
+<b>build colorhist</b> </br> 
+RUN cd /root/catkin_ws/src && \ </br>
+    git clone https://github.com/xMutzelx/colorhist.git && \ </br>
+    cd /root/catkin_ws && \ </br>
+    rosdep install --from-paths src -r -y -i && \ </br>
+    source devel/setup.bash && \ </br>
+    catkin_make -j4 </br></br>
+    
+I will soon publish an ready to use docker container. Link will follow. </br></br>
+
 Training: rosrun object_recognition_core training -c `rospack find object_recognition_colorhist`/conf/training.ork --visualize </br>
 The trainer takes the captured color pixels and creates a color histogram. </br>
 Detection: rosrun object_recognition_core detection -c  `rospack find object_recognition_colorhist`/conf/detection.ros.ork </br>
